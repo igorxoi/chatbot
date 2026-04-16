@@ -17,13 +17,13 @@ body {
 }
 
 .chat-interface {
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
   gap: 16px;
   flex: 1;
-  padding: 2rem;
+  min-height: 0;
 }
 
 .message {
@@ -35,10 +35,18 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 0 16px;
   width: 100%;
   max-width: 38rem;
   flex: 1;
-  justify-content: flex-end;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.message-list::-webkit-scrollbar {
+  display: none;
 }
 
 .chat-input-area {
@@ -141,6 +149,9 @@ input:focus {
   border: 1px solid #353535;
   position: relative;
   max-width: 250px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .message-bubble.left::before {
