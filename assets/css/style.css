@@ -16,7 +16,7 @@ body {
   min-height: 100vh;
 }
 
-.onboarding, .chat-interface {
+.onboarding {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,8 +103,7 @@ textarea:focus, input:focus {
   box-shadow: none;
 }
 
-.onboarding,
-.chatbot {
+.onboarding {
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
@@ -118,7 +117,7 @@ textarea:focus, input:focus {
   pointer-events: none;
 }
 
-.status-indicator {
+.indicator {
   height: 42px;
   width: 42px;
   background: #353535;

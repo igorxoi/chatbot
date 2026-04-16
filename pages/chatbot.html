@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/chat.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,31 +13,21 @@
     <title>Chatbot</title>
   </head>
   <body>
-    <main class="onboarding hidden">
-      <div class="message-bubble">
-        <p class="initial-message message">
-          Olá, antes de iniciar nos informe o seu CPF.
-        </p>
+    <main class="chat-interface">
+      <div class="message-list">
+        <div class="message-bubble left">
+          <p class="message">Mensagem do bot</p>
+        </div>
+
+        <div class="message-bubble right">
+          <p class="message">Mensagem do cliente</p>
+        </div>
       </div>
 
-      <div class="indicator">●●●</div>
-
       <section class="chat-input-area">
-        <input
-          type="text"
-          id="cpf"
-          class="chat-input"
-          placeholder="Digite seu CPF"
-        />
-        <input
-          type="email"
-          id="email"
-          class="chat-input hide"
-          placeholder="Digite seu email"
-        />
         <textarea
           id="message"
-          class="chat-input hide"
+          class="chat-input"
           placeholder="Digite sua mensagem aqui..."
         ></textarea>
 
@@ -63,6 +53,6 @@
         </div>
       </section>
     </main>
-    <script type="module" src="./assets/js/index.js"></script>
+    <script type="module" src="./assets/js/chatbot.js"></script>
   </body>
 </html>

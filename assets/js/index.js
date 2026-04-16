@@ -1,10 +1,7 @@
 import { addMessageToHistory } from "./chat.js";
 import { hideAllInputs, showInput } from "./handle.js";
-import {
-  loadFromLocalStorage,
-  saveToLocalStorage,
-  resetLocalStorage,
-} from "./storage.js";
+import { addRestartButtonListener } from "./listeners.js";
+import { loadFromLocalStorage, saveToLocalStorage } from "./storage.js";
 import { currentUser, setUser } from "./user.js";
 
 const cpfInput = document.getElementById("cpf");
@@ -33,7 +30,7 @@ const checkStepState = () => {
 };
 
 const updateUserFromInputs = () => {
-  const storedUser = loadFromLocalStorage('user');
+  const storedUser = loadFromLocalStorage("user");
 
   setUser({
     cpf: cpfInput.value.trim() || (storedUser && storedUser.cpf) || null,
@@ -43,30 +40,29 @@ const updateUserFromInputs = () => {
   saveToLocalStorage("user", currentUser);
 };
 
-
 const handleSendMessage = () => {
   updateUserFromInputs();
   const message = messageInput.value.trim();
 
-  if (message) {
-    const wasFirstMessage = (loadFromLocalStorage("messageHistory") || []).length === 0;
-    
-    addMessageToHistory(message);
-    messageInput.value = "";
-
-    if (wasFirstMessage) {
-      document.querySelector(".onboarding").classList.add("hidden");
-      document.querySelector(".chat-interface").classList.remove("hidden");
-    }
+  if (!message) {
+    checkStepState();
+    return;
   }
 
-  checkStepState();
+  addMessageToHistory(message, "user");
+  messageInput.value = "";
+
+  document.querySelector(".onboarding").classList.add("hidden");
+
+  setTimeout(() => {
+    window.location.href = "pages/chatbot.html";
+  }, 600);
 };
 
 const initialize = () => {
-  const storedUser = loadFromLocalStorage('user');
-  const messageHistory = loadFromLocalStorage('messageHistory') || [];
-  
+  const storedUser = loadFromLocalStorage("user");
+  const messageHistory = loadFromLocalStorage("messageHistory") || [];
+
   if (storedUser) {
     setUser(storedUser);
   }
@@ -75,7 +71,7 @@ const initialize = () => {
   onboarding.classList.remove("hidden");
 
   if (messageHistory.length > 0) {
-    // window.location.href = "pages/chat.html";
+    window.location.href = "pages/chatbot.html";
   } else {
     onboarding.classList.remove("hide");
     hideAllInputs([cpfInput, emailInput, messageInput]);
@@ -94,12 +90,9 @@ const initialize = () => {
     });
   };
 
-  [cpfInput, emailInput, messageInput].forEach(addEnterSubmitListener);
+  addRestartButtonListener();
 
-  const restartButton = document.getElementById("restart-button");
-  if (restartButton) {
-    restartButton.addEventListener("click", () => resetLocalStorage('user'));
-  }
+  [cpfInput, emailInput, messageInput].forEach(addEnterSubmitListener);
 };
 
 document.addEventListener("DOMContentLoaded", initialize);
