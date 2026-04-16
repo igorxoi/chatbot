@@ -1,95 +1,56 @@
+import { addMessageToHistory } from "./chat.js";
+import { hideAllInputs, showInput } from "./handle.js";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+  resetLocalStorage,
+} from "./storage.js";
+import { currentUser, setUser } from "./user.js";
+
 const cpfInput = document.getElementById("cpf");
 const emailInput = document.getElementById("email");
 const messageInput = document.getElementById("message");
 const messageBanner = document.querySelector(".initial-message");
 
-let currentUser = {
-  cpf: "",
-  email: "",
-};
-
-const saveUserToLocalStorage = (user) => {
-  localStorage.setItem("user", JSON.stringify(user));
-};
-
-const loadUserFromLocalStorage = () => {
-  const storedUser = localStorage.getItem("user");
-  return storedUser ? JSON.parse(storedUser) : null;
-};
-
-const hideAllInputs = () => {
-  cpfInput.classList.add("hide");
-  emailInput.classList.add("hide");
-  messageInput.classList.add("hide");
-};
-
-const showCpfInput = () => {
-  cpfInput.classList.remove("hide");
-  messageBanner.textContent = "Olá, antes de iniciar nos informe o seu CPF.";
-};
-
-const showEmailInput = () => {
-  emailInput.classList.remove("hide");
-  messageBanner.textContent = "Agora nos informe o seu email.";
-};
-
-const showMessageInput = () => {
-  messageInput.classList.remove("hide");
-  messageBanner.textContent = "Olá, como podemos te ajudar hoje?";
-};
-
 const checkStepState = () => {
-  hideAllInputs();
+  hideAllInputs([cpfInput, emailInput, messageInput]);
 
   if (!currentUser.cpf && !currentUser.email) {
-    showCpfInput();
-    return;
+    showInput(
+      cpfInput,
+      messageBanner,
+      "Olá, antes de iniciar nos informe o seu CPF.",
+    );
   }
 
   if (currentUser.cpf && !currentUser.email) {
-    showEmailInput();
-    return;
+    showInput(emailInput, messageBanner, "Agora nos informe o seu email.");
   }
 
   if (currentUser.cpf && currentUser.email) {
-    showMessageInput();
+    showInput(messageInput, messageBanner, "Olá, como podemos te ajudar hoje?");
   }
 };
 
 const updateUserFromInputs = () => {
-  const storedUser = loadUserFromLocalStorage();
+  const storedUser = loadFromLocalStorage('user');
 
-  currentUser = {
+  setUser({
     cpf: cpfInput.value.trim() || (storedUser && storedUser.cpf) || null,
     email: emailInput.value.trim() || (storedUser && storedUser.email) || null,
-  };
+  });
 
-  saveUserToLocalStorage(currentUser);
+  saveToLocalStorage("user", currentUser);
 };
 
-const addMessageToHistory = (message) => {
-  const messageHistory = JSON.parse(
-    localStorage.getItem("messageHistory") || "[]",
-  );
-
-  const messageEntry = {
-    user: currentUser,
-    origin: "user",
-    text: message,
-    timestamp: new Date().toISOString(),
-  };
-
-  messageHistory.push(messageEntry);
-  localStorage.setItem("messageHistory", JSON.stringify(messageHistory));
-};
 
 const handleSendMessage = () => {
   updateUserFromInputs();
-
   const message = messageInput.value.trim();
+
   if (message) {
-    const wasFirstMessage =
-      JSON.parse(localStorage.getItem("messageHistory") || "[]").length === 0;
+    const wasFirstMessage = (loadFromLocalStorage("messageHistory") || []).length === 0;
+    
     addMessageToHistory(message);
     messageInput.value = "";
 
@@ -102,19 +63,12 @@ const handleSendMessage = () => {
   checkStepState();
 };
 
-const resetUser = () => {
-  localStorage.removeItem("user");
-  location.reload();
-};
-
 const initialize = () => {
-  const storedUser = loadUserFromLocalStorage();
-  const messageHistory = JSON.parse(
-    localStorage.getItem("messageHistory") || "[]",
-  );
-
+  const storedUser = loadFromLocalStorage('user');
+  const messageHistory = loadFromLocalStorage('messageHistory') || [];
+  
   if (storedUser) {
-    currentUser = storedUser;
+    setUser(storedUser);
   }
 
   const onboarding = document.querySelector(".onboarding");
@@ -124,7 +78,7 @@ const initialize = () => {
     // window.location.href = "pages/chat.html";
   } else {
     onboarding.classList.remove("hide");
-    hideAllInputs();
+    hideAllInputs([cpfInput, emailInput, messageInput]);
     checkStepState();
   }
 
@@ -144,7 +98,7 @@ const initialize = () => {
 
   const restartButton = document.getElementById("restart-button");
   if (restartButton) {
-    restartButton.addEventListener("click", resetUser);
+    restartButton.addEventListener("click", () => resetLocalStorage('user'));
   }
 };
 
