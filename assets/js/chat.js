@@ -1,7 +1,7 @@
 import { loadFromLocalStorage, saveToLocalStorage } from "./storage.js";
 import { currentUser } from "./user.js";
 
-export const addMessageToHistory = (message, origin = "user") => {
+export const addMessageToHistory = (message, origin) => {
   const messageHistory = loadFromLocalStorage("messageHistory") || [];
 
   const messageEntry = {

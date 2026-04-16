@@ -1,6 +1,6 @@
 import { addMessageToHistory } from "./chat.js";
 import { hideAllInputs, showInput } from "./handle.js";
-import { addRestartButtonListener } from "./listeners.js";
+import { addEnterSubmitListener, addRestartButtonListener } from "./listeners.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "./storage.js";
 import { currentUser, setUser } from "./user.js";
 
@@ -81,18 +81,9 @@ const initialize = () => {
   const submitButton = document.getElementById("submit-button");
   submitButton.addEventListener("click", handleSendMessage);
 
-  const addEnterSubmitListener = (inputElement) => {
-    inputElement.addEventListener("keypress", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        handleSendMessage();
-      }
-    });
-  };
-
   addRestartButtonListener();
 
-  [cpfInput, emailInput, messageInput].forEach(addEnterSubmitListener);
+  [cpfInput, emailInput, messageInput].forEach((input) => addEnterSubmitListener(input, handleSendMessage));
 };
 
 document.addEventListener("DOMContentLoaded", initialize);
