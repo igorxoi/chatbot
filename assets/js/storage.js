@@ -7,7 +7,7 @@ export const loadFromLocalStorage = (name) => {
   return storedItem ? JSON.parse(storedItem) : null;
 };
 
-export const resetLocalStorage = (name) => {
-  localStorage.removeItem(name);
-  location.reload();
+export const resetLocalStorage = () => {
+  localStorage.clear();
+  window.location.href = "/index.html";
 };
