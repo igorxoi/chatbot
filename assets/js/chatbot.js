@@ -3,7 +3,7 @@ import {
   addEnterSubmitListener,
   addRestartButtonListener,
 } from "./listeners.js";
-import { getRandomMessage } from "./message.js";
+import { getRandomMessage } from "./service/message.js";
 import { loadFromLocalStorage } from "./storage.js";
 
 const messageInput = document.getElementById("message");
