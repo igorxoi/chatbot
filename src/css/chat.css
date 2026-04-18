@@ -90,6 +90,13 @@ textarea {
   height: 100%;
 }
 
+.register-link {
+  align-self: flex-start;
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
 .chat-interface {
   transition:
     opacity 0.5s ease-in-out,

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/register.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Cadastro</title>
+  </head>
+  <body>
+    <main class="register hidden">
+      <div class="register-layout">
+        <section class="register-panel">
+          <p class="register-title message">Cadastro de clientes</p>
+
+          <section class="chat-input-area register-form-area scroll-hidden">
+            <p class="register-section-label">Dados do Cliente</p>
+
+            <input type="text" placeholder="Nome" id="nome" class="register-input" />
+            <input type="text" placeholder="CPF" id="cpf" class="register-input" />
+            <input type="email" placeholder="Email" id="email" class="register-input" />
+
+            <label class="register-toggle" for="admin">
+              <span>Admin</span>
+              <input type="checkbox" id="admin" />
+            </label>
+
+            <p class="register-section-label">Cartão e Crédito</p>
+
+            <input
+              type="text"
+              placeholder="Final do cartão"
+              id="numero"
+              class="register-input"
+            />
+            <select id="tipo" class="register-input">
+              <option value="">Selecione o tipo do cartão</option>
+              <option value="fisico">Fisico</option>
+              <option value="virtual">Virtual</option>
+            </select>
+            <select id="status" class="register-input">
+              <option value="">Selecione o status</option>
+              <option value="ativo">Ativo</option>
+              <option value="bloqueado">Bloqueado</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Limite total"
+              id="limiteTotal"
+              class="register-input"
+            />
+            <input
+              type="number"
+              placeholder="Limite disponível"
+              id="limiteDisponivel"
+              class="register-input"
+            />
+            <input
+              type="number"
+              placeholder="Valor da fatura"
+              id="fatura"
+              class="register-input"
+            />
+            <input type="date" id="vencimento" class="register-input" />
+
+            <div class="actions register-actions">
+              <button id="submit-button" type="button">Cadastrar cliente</button>
+              <button id="cancel-button" type="button" class="register-secondary-action">
+                Cancelar
+              </button>
+            </div>
+          </section>
+        </section>
+
+        <section class="register-panel register-list-panel">
+          <p class="register-title message">Clientes</p>
+
+          <section class="register-list scroll-hidden" id="client-list"></section>
+        </section>
+      </div>
+    </main>
+  </body>
+  <script type="module" src="../js/pages/register.js?v=2"></script>
+</html>

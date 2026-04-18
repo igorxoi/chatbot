@@ -76,6 +76,15 @@ input:focus {
   pointer-events: none;
 }
 
+.scroll-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+
 .actions {
   display: flex;
   gap: 8px;
