@@ -8,9 +8,13 @@ import { user } from '../modules/user.js';
 const messageInput = document.getElementById('message');
 const messageContainer = document.querySelector('.message-list');
 const chatLoading = document.querySelector('.chat-loading');
+const submitButton = document.getElementById('submit-button');
 
-const setBotLoading = (isLoading) => {
+const setLoading = (isLoading) => {
   chatLoading.classList.toggle('active', isLoading);
+  messageInput.disabled = isLoading;
+  submitButton.disabled = isLoading;
+
   setTimeout(scrollChatToBottom, 0);
 };
 
@@ -61,7 +65,7 @@ const renderMessages = () => {
 };
 
 const queueBotReply = () => {
-  setBotLoading(true);
+  setLoading(true);
 
   setTimeout(async () => {
     try {
@@ -70,12 +74,16 @@ const queueBotReply = () => {
       renderMessages();
       scrollChatToBottom();
     } finally {
-      setBotLoading(false);
+      setLoading(false);
     }
   }, 1000);
 };
 
 const handleSendMessage = () => {
+  if (chatLoading.classList.contains('active')) {
+    return;
+  }
+
   const message = messageInput.value.trim();
   if (!message) {
     return;
@@ -112,8 +120,6 @@ const initialize = () => {
 
   renderMessages();
   loadInitialBotMessage();
-
-  const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', handleSendMessage);
 
   listeners.addRestartButton();
