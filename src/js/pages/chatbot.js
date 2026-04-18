@@ -5,6 +5,7 @@ import {
 } from '../modules/listeners.js';
 import { getRandomMessage } from '../service/message.js';
 import { loadFromLocalStorage } from '../modules/storage.js';
+import { currentUser } from '../modules/user.js';
 
 const messageInput = document.getElementById('message');
 const messageContainer = document.querySelector('.message-list');
@@ -51,6 +52,11 @@ const handleSendMessage = () => {
 };
 
 const initialize = () => {
+  if (!currentUser.cpf || !currentUser.email) {
+    window.location.href = '../../index.html';
+    return;
+  }
+
   const chatInterface = document.querySelector('.chat-interface');
   chatInterface.classList.remove('hidden');
 
