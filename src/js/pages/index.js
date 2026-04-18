@@ -5,6 +5,10 @@ import { authService } from '../service/auth.js';
 import { storage } from '../modules/storage.js';
 import { user } from '../modules/user.js';
 
+let submitButton;
+let initialMessage = 'Olá, antes de iniciar nos informe o seu CPF.';
+let welcomeMessage = 'Olá, como podemos te ajudar hoje?';
+
 const cpfInput = document.getElementById('cpf');
 const emailInput = document.getElementById('email');
 const messageInput = document.getElementById('message');
@@ -13,9 +17,6 @@ const initialMessageBanner = document.querySelector('.initial-message');
 const loading = document.querySelector('.loading');
 const messageBubble = document.querySelector('.message-bubble');
 const chatInputArea = document.querySelector('.chat-input-area');
-
-let initialMessage = 'Olá, antes de iniciar nos informe o seu CPF.';
-let welcomeMessage = 'Olá, como podemos te ajudar hoje?';
 
 const checkStepState = () => {
   onboardingInputs.hideAllInputs([cpfInput, emailInput, messageInput]);
@@ -50,10 +51,11 @@ const handleSuccessLogin = (currentUser) => {
     : 'Olá, como podemos te ajudar hoje?';
 };
 
-const handleErrorLogin = () => {
+const handleErrorLogin = (message = null) => {
   user.set({ cpf: '', email: '' });
 
-  initialMessage = 'Credenciais inválidas! Por favor, nos informe o seu CPF.';
+  initialMessage =
+    message || 'Credenciais inválidas! Por favor, nos informe o seu CPF.';
   cpfInput.value = '';
   emailInput.value = '';
 };
@@ -72,7 +74,7 @@ const authenticate = async () => {
     return;
   }
 
-  startLoading();
+  setLoading(true);
 
   try {
     const response = await authService.login(
@@ -87,9 +89,10 @@ const authenticate = async () => {
 
     handleErrorLogin();
   } catch (error) {
-    welcomeMessage = error.message ? error.message : 'Tivemos um problema.';
+    const message = error.message ? error.message : 'Tivemos um problema.';
+    handleErrorLogin(message);
   } finally {
-    stopLoading();
+    setLoading(false);
     checkStepState();
   }
 };
@@ -137,7 +140,7 @@ const initialize = () => {
     checkStepState();
   }
 
-  const submitButton = document.getElementById('submit-button');
+  submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', handleSendMessage);
 
   listeners.addRestartButton();
@@ -146,16 +149,16 @@ const initialize = () => {
   );
 };
 
-function startLoading() {
-  messageBubble.classList.add('hide');
-  chatInputArea.classList.add('hide');
-  loading.classList.add('active');
-}
+const setLoading = (isLoading) => {
+  messageBubble.classList.toggle('hide', isLoading);
+  chatInputArea.classList.toggle('hide', isLoading);
+  loading.classList.toggle('active', isLoading);
 
-function stopLoading() {
-  messageBubble.classList.remove('hide');
-  chatInputArea.classList.remove('hide');
-  loading.classList.remove('active');
-}
+  messageInput.disabled = isLoading;
+
+  if (submitButton) {
+    submitButton.disabled = isLoading;
+  }
+};
 
 document.addEventListener('DOMContentLoaded', initialize);
