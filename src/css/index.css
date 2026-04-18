@@ -1,21 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 .onboarding {
   display: flex;
   flex-direction: column;
@@ -24,19 +6,6 @@ body {
   gap: 16px;
   flex: 1;
   padding: 0 2rem;
-}
-
-.message {
-  font-size: 14px;
-  color: #353535;
-}
-
-.message-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 38rem;
 }
 
 .message-bubble {
@@ -74,51 +43,16 @@ body {
 
 .chat-input-area {
   margin-top: 24px;
-  display: flex;
-  width: 100%;
-  max-width: 38rem;
-  background: #f2f0ef;
-  border-radius: 1rem;
-  font-size: 14px;
-  height: 12rem;
-  flex-direction: column;
-  padding: 16px;
-  justify-content: space-between;
 }
 
 textarea {
   height: 100%;
 }
 
-textarea,
-input {
-  width: 100%;
-  border: none;
-  background: transparent;
-  resize: none;
-  color: #353535;
-}
-
-textarea:focus,
-input:focus {
-  outline: none;
-  box-shadow: none;
-}
-
 .onboarding {
   transition:
     opacity 0.5s ease-in-out,
     transform 0.5s ease-in-out;
-}
-
-.hide {
-  display: none;
-}
-
-.hidden {
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
 }
 
 .loading {
@@ -128,41 +62,6 @@ input:focus {
   color: white;
   border-radius: 50%;
   font-size: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  justify-content: space-between;
-}
-
-#restart-button {
-  height: 36px;
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: none;
-  color: #f2f0ef;
-  background: #353535;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#submit-button {
-  height: 36px;
-  width: 36px;
-  border: none;
-  background: #353535;
-  color: white;
-  border-radius: 50%;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
