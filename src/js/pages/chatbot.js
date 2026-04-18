@@ -9,6 +9,12 @@ import { currentUser, setUser } from '../modules/user.js';
 
 const messageInput = document.getElementById('message');
 const messageContainer = document.querySelector('.message-list');
+const chatLoading = document.querySelector('.chat-loading');
+
+const setBotLoading = (isLoading) => {
+  chatLoading.classList.toggle('active', isLoading);
+  setTimeout(scrollChatToBottom, 0);
+};
 
 const scrollChatToBottom = () => {
   messageContainer.scrollTop = messageContainer.scrollHeight;
@@ -31,12 +37,18 @@ const renderMessages = () => {
   });
 };
 
-const queueBotReply = (message) => {
+const queueBotReply = () => {
+  setBotLoading(true);
+
   setTimeout(async () => {
-    const { message: botMessage } = await getRandomMessage();
-    addMessageToHistory(botMessage, 'bot');
-    renderMessages();
-    scrollChatToBottom();
+    try {
+      const { message: botMessage } = await getRandomMessage();
+      addMessageToHistory(botMessage, 'bot');
+      renderMessages();
+      scrollChatToBottom();
+    } finally {
+      setBotLoading(false);
+    }
   }, 1000);
 };
 
