@@ -3,6 +3,11 @@ import {
   addEnterSubmitListener,
   addRestartButtonListener,
 } from '../modules/listeners.js';
+import {
+  formatMessageDay,
+  formatMessageTime,
+  getMessageAuthor,
+} from '../modules/messageInfo.js';
 import { getRandomMessage } from '../service/message.js';
 import { loadFromLocalStorage } from '../modules/storage.js';
 import { currentUser, setUser } from '../modules/user.js';
@@ -23,15 +28,40 @@ const scrollChatToBottom = () => {
 const renderMessages = () => {
   const messageHistory = loadFromLocalStorage('messageHistory') || [];
   messageContainer.innerHTML = '';
+  let previousMessageDay = '';
 
   messageHistory.forEach((msg) => {
+    const currentMessageDay = formatMessageDay(msg.timestamp);
     const bubble = document.createElement('div');
+    const author = document.createElement('span');
+    const text = document.createElement('p');
+    const time = document.createElement('span');
+
+    if (currentMessageDay && currentMessageDay !== previousMessageDay) {
+      const daySeparator = document.createElement('div');
+      daySeparator.classList.add('message-day');
+      daySeparator.textContent = currentMessageDay;
+      messageContainer.appendChild(daySeparator);
+      previousMessageDay = currentMessageDay;
+    }
 
     bubble.classList.add(
       'message-bubble',
       msg.origin === 'user' ? 'left' : 'right'
     );
-    bubble.innerHTML = `<p class="message">${msg.text}</p>`;
+
+    author.classList.add('message-author');
+    author.textContent = getMessageAuthor(msg);
+
+    text.classList.add('message');
+    text.textContent = msg.text;
+
+    time.classList.add('message-time');
+    time.textContent = formatMessageTime(msg.timestamp);
+
+    bubble.appendChild(author);
+    bubble.appendChild(text);
+    bubble.appendChild(time);
 
     messageContainer.appendChild(bubble);
   });
