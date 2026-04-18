@@ -1,3 +1,12 @@
+ :root {
+  --color-text-primary: #353535;
+  --color-text-secondary: #666666;
+  --color-text-muted: #8a8a8a;
+  --color-text-inverse: #ffffff;
+  --color-surface-secondary: #f2f0ef;
+  --color-surface-muted: #e8e4e1;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -18,7 +27,7 @@ body {
 
 .message {
   font-size: 14px;
-  color: #353535;
+  color: var(--color-text-primary);
 }
 
 .message-list {
@@ -33,7 +42,7 @@ body {
   display: flex;
   width: 100%;
   max-width: 38rem;
-  background: #f2f0ef;
+  background: var(--color-surface-secondary);
   border-radius: 1rem;
   font-size: 14px;
   height: 12rem;
@@ -48,7 +57,7 @@ input {
   border: none;
   background: transparent;
   resize: none;
-  color: #353535;
+  color: var(--color-text-primary);
 }
 
 textarea:focus,
@@ -79,8 +88,8 @@ input:focus {
   padding: 4px 8px;
   border-radius: 8px;
   border: none;
-  color: #f2f0ef;
-  background: #353535;
+  color: var(--color-surface-secondary);
+  background: var(--color-text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -91,8 +100,8 @@ input:focus {
   height: 36px;
   width: 36px;
   border: none;
-  background: #353535;
-  color: white;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
   border-radius: 50%;
   cursor: pointer;
   display: flex;

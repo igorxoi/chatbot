@@ -25,8 +25,8 @@
   align-self: center;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #e8e4e1;
-  color: #666;
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 500;
   margin: 16px 0;
@@ -52,7 +52,15 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #353535;
+  background: var(--color-text-primary);
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+  opacity: 0.35;
+}
+
+.chat-loading.active span {
+  opacity: 1;
   animation: chat-blink 1s infinite ease-in-out;
 }
 
@@ -97,18 +105,18 @@ textarea {
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid white;
+  border-top: 10px solid var(--color-text-inverse);
 }
 
 .message-bubble {
   position: relative;
   border-radius: 0.4em;
   max-width: 250px;
-  color: white;
+  color: var(--color-text-inverse);
   display: flex;
   flex-direction: column;
   padding: 8px 12px;
-  border: 1px solid #353535;
+  border: 1px solid var(--color-text-primary);
   position: relative;
   max-width: 250px;
   word-wrap: break-word;
@@ -119,14 +127,14 @@ textarea {
 .message-author {
   font-size: 11px;
   font-weight: 600;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
   text-align: left;
 }
 
 .message-time {
   font-size: 11px;
-  color: #8a8a8a;
+  color: var(--color-text-muted);
   margin-top: 6px;
   align-self: flex-end;
   text-align: right;
@@ -140,7 +148,7 @@ textarea {
   width: 0;
   height: 0;
   border: 12px solid transparent;
-  border-right-color: #353535;
+  border-right-color: var(--color-text-primary);
   border-left: 0;
   border-bottom: 0;
   margin-top: -6px;
@@ -155,7 +163,7 @@ textarea {
   width: 0;
   height: 0;
   border: 11px solid transparent;
-  border-right-color: #fff;
+  border-right-color: var(--color-text-inverse);
   border-left: 0;
   border-bottom: 0;
   margin-top: -6px;
@@ -170,7 +178,7 @@ textarea {
   width: 0;
   height: 0;
   border: 12px solid transparent;
-  border-left-color: #353535;
+  border-left-color: var(--color-text-primary);
   border-right: 0;
   border-bottom: 0;
   margin-top: -6px;
@@ -185,7 +193,7 @@ textarea {
   width: 0;
   height: 0;
   border: 12px solid transparent;
-  border-left-color: #fff;
+  border-left-color: var(--color-text-inverse);
   border-right: 0;
   border-bottom: 0;
   margin-top: -7px;
