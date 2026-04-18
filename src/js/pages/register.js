@@ -18,7 +18,7 @@ const availableLimitInput = document.getElementById('limiteDisponivel');
 const invoiceInput = document.getElementById('fatura');
 const dueDateInput = document.getElementById('vencimento');
 
-const initialize = () => {
+const initialize = async () => {
   register.setup({
     clientList,
     submitButton,
@@ -36,7 +36,8 @@ const initialize = () => {
     invoiceInput,
     dueDateInput,
   });
-  register.initialize();
+
+  await register.initialize();
 
   submitButton.addEventListener('click', register.handleSubmit);
   cancelButton.addEventListener('click', register.clearForm);

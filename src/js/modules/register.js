@@ -1,3 +1,7 @@
+import { clientsService } from '../service/clients.js';
+
+const clients = [];
+
 let clientList;
 let submitButton;
 let cancelButton;
@@ -13,110 +17,8 @@ let totalLimitInput;
 let availableLimitInput;
 let invoiceInput;
 let dueDateInput;
+let editingIndex = null;
 
-let editingClientIndex = null;
-
-const clients = [
-  {
-    nome: 'Igor Xavier',
-    cpf: '123.456.789-00',
-    admin: true,
-    cartao: {
-      numero_final: '1234',
-      limite_total: 5000,
-      limite_disponivel: 3200,
-      valor_fatura: 1800,
-      status_cartao: 'ativo',
-    },
-  },
-  {
-    nome: 'Maria Silva',
-    cpf: '987.654.321-00',
-    admin: false,
-    cartao: {
-      numero_final: '5678',
-      limite_total: 3000,
-      limite_disponivel: 1500,
-      valor_fatura: 1500,
-      status_cartao: 'bloqueado',
-    },
-  },
-  {
-    nome: 'Joao Pedro',
-    cpf: '456.123.789-10',
-    email: 'joao.pedro@email.com',
-    admin: false,
-    cartao: {
-      numero_final: '8821',
-      tipo_cartao: 'virtual',
-      limite_total: 4200,
-      limite_disponivel: 2800,
-      valor_fatura: 1400,
-      status_cartao: 'ativo',
-      data_vencimento: '2026-04-28',
-    },
-  },
-  {
-    nome: 'Fernanda Costa',
-    cpf: '741.258.963-11',
-    email: 'fernanda.costa@email.com',
-    admin: false,
-    cartao: {
-      numero_final: '3045',
-      tipo_cartao: 'fisico',
-      limite_total: 7800,
-      limite_disponivel: 6100,
-      valor_fatura: 1700,
-      status_cartao: 'ativo',
-      data_vencimento: '2026-05-10',
-    },
-  },
-  {
-    nome: 'Lucas Almeida',
-    cpf: '159.357.456-22',
-    email: 'lucas.almeida@email.com',
-    admin: true,
-    cartao: {
-      numero_final: '7190',
-      tipo_cartao: 'virtual',
-      limite_total: 9500,
-      limite_disponivel: 2200,
-      valor_fatura: 7300,
-      status_cartao: 'bloqueado',
-      data_vencimento: '2026-04-24',
-    },
-  },
-  {
-    nome: 'Camila Rocha',
-    cpf: '852.741.963-33',
-    email: 'camila.rocha@email.com',
-    admin: false,
-    cartao: {
-      numero_final: '4412',
-      tipo_cartao: 'fisico',
-      limite_total: 2600,
-      limite_disponivel: 950,
-      valor_fatura: 1650,
-      status_cartao: 'ativo',
-      data_vencimento: '2026-05-03',
-    },
-  },
-  {
-    nome: 'Bruno Martins',
-    cpf: '963.852.147-44',
-    email: 'bruno.martins@email.com',
-    admin: false,
-    cartao: {
-      numero_final: '1287',
-      tipo_cartao: 'virtual',
-      limite_total: 5100,
-      limite_disponivel: 4700,
-      valor_fatura: 400,
-      status_cartao: 'ativo',
-      data_vencimento: '2026-05-14',
-    },
-  },
-];
 
 const setup = (elements) => {
   clientList = elements.clientList;
@@ -161,7 +63,7 @@ const clearForm = () => {
   availableLimitInput.value = '';
   invoiceInput.value = '';
   dueDateInput.value = '';
-  editingClientIndex = null;
+  editingIndex = null;
   setEditingState(false);
 };
 
@@ -277,11 +179,17 @@ const renderClients = () => {
   });
 };
 
+const loadClients = async () => {
+  const response = await clientsService.getClients();
+  const loadedClients = response.success ? response.clients : [];
+  clients.splice(0, clients.length, ...loadedClients);
+};
+
 const handleSubmit = () => {
   const clientData = buildClientData();
 
-  if (editingClientIndex !== null) {
-    clients[editingClientIndex] = clientData;
+  if (editingIndex !== null) {
+    clients[editingIndex] = clientData;
   } else {
     clients.push(clientData);
   }
@@ -296,7 +204,7 @@ const handleEdit = (index) => {
     return;
   }
 
-  editingClientIndex = index;
+  editingIndex = index;
   fillForm(client);
   setEditingState(true);
   nameInput.focus();
@@ -309,10 +217,10 @@ const handleRemove = (index) => {
 
   clients.splice(index, 1);
 
-  if (editingClientIndex === index) {
+  if (editingIndex === index) {
     clearForm();
-  } else if (editingClientIndex !== null && editingClientIndex > index) {
-    editingClientIndex -= 1;
+  } else if (editingIndex !== null && editingIndex > index) {
+    editingIndex -= 1;
   }
 
   renderClients();
@@ -336,9 +244,11 @@ const handleCardActions = (event) => {
   }
 };
 
-const initialize = () => {
+const initialize = async () => {
   registerPage.classList.remove('hidden');
   setEditingState(false);
+
+  await loadClients();
   renderClients();
 };
 

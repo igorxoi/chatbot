@@ -8,8 +8,7 @@ async function login(cpf, email) {
       body: JSON.stringify({ cpf, email }),
     });
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     return {
       success: false,
