@@ -66,30 +66,34 @@ const updateUserFromInputs = () => {
     cpf: cpfInput.value.trim() || (storedUser && storedUser.cpf) || null,
     email: emailInput.value.trim() || (storedUser && storedUser.email) || null,
   });
+};
 
-  if (currentUser.cpf && currentUser.email) {
-    startLoading();
-    login(currentUser.cpf, currentUser.email)
-      .then((response) =>
-        response.success
-          ? handleSuccessLogin(response.user)
-          : handleErrorLogin()
-      )
-      .catch(
-        (error) =>
-          (welcomeMessage = error.message
-            ? error.message
-            : 'Tivemos um problema.')
-      )
-      .finally(() => {
-        stopLoading();
-        checkStepState();
-      });
+const authenticate = async () => {
+  if (!currentUser.cpf || !currentUser.email) {
+    return;
+  }
+
+  startLoading();
+
+  try {
+    const response = await login(currentUser.cpf, currentUser.email);
+    if (response.success) {
+      handleSuccessLogin(response.user);
+      return;
+    }
+
+    handleErrorLogin();
+  } catch (error) {
+    welcomeMessage = error.message ? error.message : 'Tivemos um problema.';
+  } finally {
+    stopLoading();
+    checkStepState();
   }
 };
 
 const handleSendMessage = () => {
   updateUserFromInputs();
+  authenticate();
 
   const message = messageInput.value.trim();
   if (!message) {
