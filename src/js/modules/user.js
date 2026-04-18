@@ -1,8 +1,12 @@
-export let currentUser = {
+let currentUser = {
   cpf: '',
   email: '',
 };
 
-export const setUser = (user) => {
-  currentUser = user;
+const set = (value) => {
+  currentUser = value;
 };
+
+const get = () => currentUser;
+
+export const user = { get, set };

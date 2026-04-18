@@ -1,15 +1,9 @@
-import { addMessageToHistory } from '../modules/history.js';
-import { hideAllInputs, showInput } from '../modules/handle.js';
-import {
-  addEnterSubmitListener,
-  addRestartButtonListener,
-} from '../modules/listeners.js';
-import { login } from '../service/auth.js';
-import {
-  loadFromLocalStorage,
-  saveToLocalStorage,
-} from '../modules/storage.js';
-import { currentUser, setUser } from '../modules/user.js';
+import { history } from '../modules/history.js';
+import { onboardingInputs } from '../modules/onboardingInputs.js';
+import { listeners } from '../modules/listeners.js';
+import { authService } from '../service/auth.js';
+import { storage } from '../modules/storage.js';
+import { user } from '../modules/user.js';
 
 const cpfInput = document.getElementById('cpf');
 const emailInput = document.getElementById('email');
@@ -24,36 +18,40 @@ let initialMessage = 'Olá, antes de iniciar nos informe o seu CPF.';
 let welcomeMessage = 'Olá, como podemos te ajudar hoje?';
 
 const checkStepState = () => {
-  hideAllInputs([cpfInput, emailInput, messageInput]);
+  onboardingInputs.hideAllInputs([cpfInput, emailInput, messageInput]);
 
-  if (!currentUser.cpf && !currentUser.email) {
-    showInput(cpfInput, initialMessageBanner, initialMessage);
+  if (!user.get().cpf && !user.get().email) {
+    onboardingInputs.showInput(cpfInput, initialMessageBanner, initialMessage);
   }
 
-  if (currentUser.cpf && !currentUser.email) {
-    showInput(
+  if (user.get().cpf && !user.get().email) {
+    onboardingInputs.showInput(
       emailInput,
       initialMessageBanner,
       'Agora nos informe o seu email.'
     );
   }
 
-  if (currentUser.cpf && currentUser.email) {
-    showInput(messageInput, initialMessageBanner, welcomeMessage);
+  if (user.get().cpf && user.get().email) {
+    onboardingInputs.showInput(
+      messageInput,
+      initialMessageBanner,
+      welcomeMessage
+    );
   }
 };
 
-const handleSuccessLogin = (user) => {
-  setUser(user);
-  saveToLocalStorage('user', user);
+const handleSuccessLogin = (currentUser) => {
+  user.set(currentUser);
+  storage.save('user', currentUser);
 
-  welcomeMessage = user.name
-    ? `Olá ${user.name}, como podemos te ajudar hoje?`
+  welcomeMessage = currentUser.name
+    ? `Olá ${currentUser.name}, como podemos te ajudar hoje?`
     : 'Olá, como podemos te ajudar hoje?';
 };
 
 const handleErrorLogin = () => {
-  setUser({ cpf: '', email: '' });
+  user.set({ cpf: '', email: '' });
 
   initialMessage = 'Credenciais inválidas! Por favor, nos informe o seu CPF.';
   cpfInput.value = '';
@@ -61,14 +59,15 @@ const handleErrorLogin = () => {
 };
 
 const updateUserFromInputs = () => {
-  const storedUser = loadFromLocalStorage('user');
-  setUser({
+  const storedUser = storage.load('user');
+  user.set({
     cpf: cpfInput.value.trim() || (storedUser && storedUser.cpf) || null,
     email: emailInput.value.trim() || (storedUser && storedUser.email) || null,
   });
 };
 
 const authenticate = async () => {
+  const currentUser = user.get();
   if (!currentUser.cpf || !currentUser.email) {
     return;
   }
@@ -76,7 +75,11 @@ const authenticate = async () => {
   startLoading();
 
   try {
-    const response = await login(currentUser.cpf, currentUser.email);
+    const response = await authService.login(
+      currentUser.cpf,
+      currentUser.email
+    );
+
     if (response.success) {
       handleSuccessLogin(response.user);
       return;
@@ -101,24 +104,26 @@ const handleSendMessage = () => {
     return;
   }
 
-  addMessageToHistory(message, 'user');
+  history.addMessage(message, 'user');
   messageInput.value = '';
 
   document.querySelector('.onboarding').classList.add('hidden');
+
   setTimeout(() => {
     window.location.href = 'src/pages/chatbot.html';
   }, 600);
 };
 
 const initialize = () => {
-  const storedUser = loadFromLocalStorage('user');
-  const messageHistory = loadFromLocalStorage('messageHistory') || [];
+  const storedUser = storage.load('user');
+  const messageHistory = storage.load('messageHistory') || [];
 
   if (storedUser) {
     welcomeMessage = storedUser.name
       ? `Olá ${storedUser.name}, como podemos te ajudar hoje?`
       : 'Olá, como podemos te ajudar hoje?';
-    setUser(storedUser);
+
+    user.set(storedUser);
   }
 
   const onboarding = document.querySelector('.onboarding');
@@ -128,16 +133,16 @@ const initialize = () => {
     window.location.href = 'src/pages/chatbot.html';
   } else {
     onboarding.classList.remove('hide');
-    hideAllInputs([cpfInput, emailInput, messageInput]);
+    onboardingInputs.hideAllInputs([cpfInput, emailInput, messageInput]);
     checkStepState();
   }
 
   const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', handleSendMessage);
 
-  addRestartButtonListener();
+  listeners.addRestartButton();
   [cpfInput, emailInput, messageInput].forEach((input) =>
-    addEnterSubmitListener(input, handleSendMessage)
+    listeners.addEnterSubmit(input, handleSendMessage)
   );
 };
 

@@ -1,16 +1,9 @@
-import { addMessageToHistory } from '../modules/history.js';
-import {
-  addEnterSubmitListener,
-  addRestartButtonListener,
-} from '../modules/listeners.js';
-import {
-  formatMessageDay,
-  formatMessageTime,
-  getMessageAuthor,
-} from '../modules/messageInfo.js';
-import { getRandomMessage } from '../service/message.js';
-import { loadFromLocalStorage } from '../modules/storage.js';
-import { currentUser, setUser } from '../modules/user.js';
+import { history } from '../modules/history.js';
+import { listeners } from '../modules/listeners.js';
+import { messageInfo } from '../modules/messageInfo.js';
+import { messageService } from '../service/message.js';
+import { storage } from '../modules/storage.js';
+import { user } from '../modules/user.js';
 
 const messageInput = document.getElementById('message');
 const messageContainer = document.querySelector('.message-list');
@@ -26,12 +19,12 @@ const scrollChatToBottom = () => {
 };
 
 const renderMessages = () => {
-  const messageHistory = loadFromLocalStorage('messageHistory') || [];
+  const messageHistory = storage.load('messageHistory') || [];
   messageContainer.innerHTML = '';
   let previousMessageDay = '';
 
   messageHistory.forEach((msg) => {
-    const currentMessageDay = formatMessageDay(msg.timestamp);
+    const currentMessageDay = messageInfo.formatDay(msg.timestamp);
     const bubble = document.createElement('div');
     const author = document.createElement('span');
     const text = document.createElement('p');
@@ -51,13 +44,13 @@ const renderMessages = () => {
     );
 
     author.classList.add('message-author');
-    author.textContent = getMessageAuthor(msg);
+    author.textContent = messageInfo.getAuthor(msg);
 
     text.classList.add('message');
     text.textContent = msg.text;
 
     time.classList.add('message-time');
-    time.textContent = formatMessageTime(msg.timestamp);
+    time.textContent = messageInfo.formatTime(msg.timestamp);
 
     bubble.appendChild(author);
     bubble.appendChild(text);
@@ -72,8 +65,8 @@ const queueBotReply = () => {
 
   setTimeout(async () => {
     try {
-      const { message: botMessage } = await getRandomMessage();
-      addMessageToHistory(botMessage, 'bot');
+      const { message: botMessage } = await messageService.getRandomMessage();
+      history.addMessage(botMessage, 'bot');
       renderMessages();
       scrollChatToBottom();
     } finally {
@@ -88,7 +81,7 @@ const handleSendMessage = () => {
     return;
   }
 
-  addMessageToHistory(message, 'user');
+  history.addMessage(message, 'user');
   renderMessages();
   scrollChatToBottom();
 
@@ -98,7 +91,7 @@ const handleSendMessage = () => {
 };
 
 const loadInitialBotMessage = async () => {
-  const history = loadFromLocalStorage('messageHistory') || [];
+  const history = storage.load('messageHistory') || [];
   const lastMessage = history[history.length - 1];
 
   if (history.length > 0 && lastMessage?.origin === 'user') {
@@ -107,9 +100,9 @@ const loadInitialBotMessage = async () => {
 };
 
 const initialize = () => {
-  setUser(loadFromLocalStorage('user'));
+  user.set(storage.load('user'));
 
-  if (!currentUser.cpf || !currentUser.email) {
+  if (!user.get().cpf || !user.get().email) {
     window.location.href = '../../index.html';
     return;
   }
@@ -123,8 +116,8 @@ const initialize = () => {
   const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', handleSendMessage);
 
-  addRestartButtonListener();
-  addEnterSubmitListener(messageInput, handleSendMessage);
+  listeners.addRestartButton();
+  listeners.addEnterSubmit(messageInput, handleSendMessage);
 
   window.addEventListener('load', () => {
     scrollChatToBottom();

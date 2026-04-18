@@ -1,16 +1,18 @@
-import { loadFromLocalStorage, saveToLocalStorage } from './storage.js';
-import { currentUser } from './user.js';
+import { storage } from './storage.js';
+import { user } from './user.js';
 
-export const addMessageToHistory = (message, origin) => {
-  const messageHistory = loadFromLocalStorage('messageHistory') || [];
+export const addMessage = (message, origin) => {
+  const messageHistory = storage.load('messageHistory') || [];
 
   const messageEntry = {
-    user: currentUser,
+    user: user.get(),
     origin: origin,
     text: message,
     timestamp: new Date().toISOString(),
   };
 
   messageHistory.push(messageEntry);
-  saveToLocalStorage('messageHistory', messageHistory);
+  storage.save('messageHistory', messageHistory);
 };
+
+export const history = { addMessage };

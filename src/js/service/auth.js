@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:3000/login';
 
-export async function login(cpf, email) {
+async function login(cpf, email) {
   try {
     const response = await fetch(BASE_URL, {
       method: 'POST',
@@ -17,3 +17,5 @@ export async function login(cpf, email) {
     };
   }
 }
+
+export const authService = { login };

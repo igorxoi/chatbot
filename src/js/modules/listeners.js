@@ -1,11 +1,11 @@
-import { resetLocalStorage } from './storage.js';
+import { storage } from './storage.js';
 
-export const addRestartButtonListener = () => {
+const addRestartButton = () => {
   const restartButton = document.getElementById('restart-button');
-  restartButton.addEventListener('click', () => resetLocalStorage());
+  restartButton.addEventListener('click', () => storage.reset());
 };
 
-export const addEnterSubmitListener = (inputElement, callback) => {
+const addEnterSubmit = (inputElement, callback) => {
   inputElement.addEventListener('keypress', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -13,3 +13,5 @@ export const addEnterSubmitListener = (inputElement, callback) => {
     }
   });
 };
+
+export const listeners = { addRestartButton, addEnterSubmit };

@@ -1,4 +1,4 @@
-export const getMessageAuthor = (message) => {
+const getAuthor = (message) => {
   const { user, origin } = message;
 
   if (origin === 'user') {
@@ -8,7 +8,7 @@ export const getMessageAuthor = (message) => {
   return 'Atendimento';
 };
 
-export const formatMessageTime = (timestamp) => {
+const formatTime = (timestamp) => {
   const date = new Date(timestamp);
   if (Number.isNaN(date.getTime())) {
     return '';
@@ -20,7 +20,7 @@ export const formatMessageTime = (timestamp) => {
   });
 };
 
-export const formatMessageDay = (timestamp) => {
+const formatDay = (timestamp) => {
   const date = new Date(timestamp);
   if (Number.isNaN(date.getTime())) {
     return '';
@@ -32,3 +32,5 @@ export const formatMessageDay = (timestamp) => {
     year: 'numeric',
   });
 };
+
+export const messageInfo = { getAuthor, formatTime, formatDay };
