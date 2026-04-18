@@ -1,5 +1,5 @@
-export const saveToLocalStorage = (name, user) => {
-  localStorage.setItem(name, JSON.stringify(user));
+export const saveToLocalStorage = (name, value) => {
+  localStorage.setItem(name, JSON.stringify(value));
 };
 
 export const loadFromLocalStorage = (name) => {
@@ -9,5 +9,5 @@ export const loadFromLocalStorage = (name) => {
 
 export const resetLocalStorage = () => {
   localStorage.clear();
-  window.location.href = "/index.html";
+  window.location.href = '/index.html';
 };

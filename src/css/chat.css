@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 html,
@@ -129,7 +129,7 @@ input:focus {
 }
 
 .message-bubble.bot::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -10px;
   left: 16px;
@@ -155,7 +155,7 @@ input:focus {
 }
 
 .message-bubble.left::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 50%;
@@ -170,7 +170,7 @@ input:focus {
 }
 
 .message-bubble.left::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 50%;
@@ -185,7 +185,7 @@ input:focus {
 }
 
 .message-bubble.right::before {
-  content: "";
+  content: '';
   position: absolute;
   right: 0;
   top: 50%;
@@ -200,7 +200,7 @@ input:focus {
 }
 
 .message-bubble.right::after {
-  content: "";
+  content: '';
   position: absolute;
   right: 0;
   top: 50%;

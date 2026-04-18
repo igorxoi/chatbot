@@ -1,6 +1,6 @@
 export let currentUser = {
-  cpf: "",
-  email: "",
+  cpf: '',
+  email: '',
 };
 
 export const setUser = (user) => {
