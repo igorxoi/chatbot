@@ -5,7 +5,7 @@ import {
 } from '../modules/listeners.js';
 import { getRandomMessage } from '../service/message.js';
 import { loadFromLocalStorage } from '../modules/storage.js';
-import { currentUser } from '../modules/user.js';
+import { currentUser, setUser } from '../modules/user.js';
 
 const messageInput = document.getElementById('message');
 const messageContainer = document.querySelector('.message-list');
@@ -31,6 +31,15 @@ const renderMessages = () => {
   });
 };
 
+const queueBotReply = (message) => {
+  setTimeout(async () => {
+    const { message: botMessage } = await getRandomMessage();
+    addMessageToHistory(botMessage, 'bot');
+    renderMessages();
+    scrollChatToBottom();
+  }, 1000);
+};
+
 const handleSendMessage = () => {
   const message = messageInput.value.trim();
   if (!message) {
@@ -39,19 +48,25 @@ const handleSendMessage = () => {
 
   addMessageToHistory(message, 'user');
   renderMessages();
-
-  setTimeout(async () => {
-    const { message: botMessage } = await getRandomMessage();
-    addMessageToHistory(botMessage, 'bot');
-    renderMessages();
-    scrollChatToBottom();
-  }, 1000);
+  scrollChatToBottom();
 
   messageInput.value = '';
-  scrollChatToBottom();
+
+  queueBotReply();
+};
+
+const loadInitialBotMessage = async () => {
+  const history = loadFromLocalStorage('messageHistory') || [];
+  const lastMessage = history[history.length - 1];
+
+  if (history.length > 0 && lastMessage?.origin === 'user') {
+    queueBotReply();
+  }
 };
 
 const initialize = () => {
+  setUser(loadFromLocalStorage('user'));
+
   if (!currentUser.cpf || !currentUser.email) {
     window.location.href = '../../index.html';
     return;
@@ -61,6 +76,7 @@ const initialize = () => {
   chatInterface.classList.remove('hidden');
 
   renderMessages();
+  loadInitialBotMessage();
 
   const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', handleSendMessage);
