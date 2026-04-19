@@ -185,13 +185,26 @@ const loadClients = async () => {
   clients.splice(0, clients.length, ...loadedClients);
 };
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const clientData = buildClientData();
 
   if (editingIndex !== null) {
-    clients[editingIndex] = clientData;
+    const id = clients[editingIndex].id;
+    const response = await clientsService.update(id, clientData);
+
+    if (!response.success) {
+      return;
+    }
+
+    clients[editingIndex] = { ...clientData, id };
   } else {
-    clients.push(clientData);
+    const response = await clientsService.add(clientData);
+
+    if (!response.success) {
+      return;
+    }
+
+    clients.push({ ...clientData, id: response.id });
   }
 
   clearForm();
@@ -210,8 +223,16 @@ const handleEdit = (index) => {
   nameInput.focus();
 };
 
-const handleRemove = (index) => {
-  if (clients[index]?.admin) {
+const handleRemove = async (index) => {
+  const client = clients[index];
+
+  if (client?.admin) {
+    return;
+  }
+
+  const response = await clientsService.remove(client.id);
+
+  if (!response.success) {
     return;
   }
 
